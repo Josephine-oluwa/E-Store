@@ -2,11 +2,13 @@ import mongoose, { model } from "mongoose"
 
 interface Product {
     title: string;
-    image: Array<string>;
+    image: string;
+    imageID: string;
     cost: number;
     rating: number;
     QTYinStock: number;
     toggle: boolean;
+    QTYPurchased: number
 }
 
 interface iProduct extends Product, mongoose.Document{}
@@ -15,11 +17,14 @@ const productModel = new  mongoose.Schema({
     title: {
         type: String
     }, 
-    Image: {
-        type: Array<string>
+    image: {
+        type: String
+    },
+    imageID: {
+        type: String
     },
     cost: {
-        type: String
+        type: Number
     },
     rating: {
         type: Number
@@ -31,6 +36,9 @@ const productModel = new  mongoose.Schema({
     toggle: {
         type: Boolean,
         default: false 
+    },
+    QTYPurchased: {
+        type: Number,
     }
 },
 {timestamps: true}

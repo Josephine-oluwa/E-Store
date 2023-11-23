@@ -1,17 +1,19 @@
 import { Response} from "express"
 import productModel from "../model/productModel"
-import { myStreamifier } from "../utils/stream"
+import {streamUpload} from "../utils/stream"
 
 export const createProduct = async (req: any, res: Response) => {
     try {
         const {title, rating, cost, QTYinStock} = req.body
+        const {secure_url,public_id}:any = await streamUpload(req)
 
         const product = await productModel.create({
             title,
             rating: parseInt(rating),
             cost: parseInt(cost),
             QTYinStock,
-            image: await myStreamifier(req)
+            image: secure_url,
+            imageID:public_id
         })
         return res.status(201).json({
             message: "product has been successfully created",
@@ -46,9 +48,9 @@ export const findAllProducts = async (req: any, res: Response) => {
 export const findOneProduct = async (req: any, res: Response) => {
     try {
        
-        const {productId} = req.params;
+        const {productID} = req.params;
 
-        const product = await productModel.findById(productId)
+        const product = await productModel.findById(productID)
 
 
         return res.status(200).json({
@@ -67,19 +69,19 @@ export const findOneProduct = async (req: any, res: Response) => {
 export const updateProductStock = async (req: any, res: Response) => {
     try {
        
-        const {productId} = req.params;
+        const {productID} = req.params;
         const {QTYPurchased} = req.body;
 
-        const product = await productModel.findById(productId)
+        const product = await productModel.findById(productID)
 
         if (product) {
             let viewProduct = await productModel.findByIdAndUpdate(
-                productId,
+                productID,
                {QTYinStock: product.QTYinStock - QTYPurchased} ,
                {new: true}
             )
             return res.status(200).json({
-                message: "one Product  has been Found",
+                message: "one Product  has been updated",
                 data: viewProduct
             })
         }
